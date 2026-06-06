@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Thirsty Is Your AI? — Session Consumption Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f7f4ef;
+  --bg2: #f0ece4;
+  --ink: #2c2c28;
+  --ink-mid: #5a5850;
+  --ink-muted: #9a9588;
+  --water: #3a6b8a;
+  --water-pale: #c8dde8;
+  --water-bg: #eef4f8;
+  --energy: #8a5a2a;
+  --energy-pale: #e8d4b8;
+  --energy-bg: #faf4ec;
+  --green: #4a6b4a;
+  --green-pale: #c8d8c8;
+  --border: rgba(44,44,40,0.1);
+  --border-mid: rgba(44,44,40,0.18);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:'Lato',sans-serif;font-weight:300;font-size:15px;line-height:1.65;min-height:100vh;overflow-x:hidden}
+.page{position:relative}
+
+#sky-svg{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:visible}
+
+.wrapper{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:56px 40px 0}
+.header{margin-bottom:52px;border-bottom:1px solid var(--border-mid);padding-bottom:32px}
+.eyebrow{font-family:'Inter',sans-serif;font-size:10px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:16px}
+.header h1{font-family:'Lato',sans-serif;font-size:clamp(28px,5vw,44px);font-weight:300;line-height:1.12;letter-spacing:-.02em;color:var(--ink);margin-bottom:14px}
+.header h1 em{font-style:italic;color:var(--water)}
+.header-sub{font-size:14px;color:var(--ink-mid);max-width:500px;line-height:1.7;font-weight:300}
+.sec{font-family:'Inter',sans-serif;font-size:10px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:12px;display:block}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:24px}
+.pcard{background:white;border:1px solid var(--border);border-radius:6px;padding:14px 16px;cursor:pointer;transition:all .18s ease}
+.pcard:hover{border-color:var(--border-mid);background:var(--bg)}
+.pcard.active{background:var(--ink);border-color:var(--ink)}
+.pcard .pn{font-size:15px;font-weight:400;color:var(--ink);display:block;margin-bottom:2px}
+.pcard.active .pn{color:var(--bg)}
+.pcard .ps{font-family:'Inter',sans-serif;font-size:10px;color:var(--ink-muted);display:block;margin-bottom:6px;letter-spacing:.04em}
+.pcard.active .ps{color:rgba(247,244,239,.6)}
+.pcard .pd{font-family:'Inter',sans-serif;font-size:10px;color:var(--ink-muted);display:block}
+.pcard.active .pd{color:rgba(247,244,239,.5)}
+.banner{border-radius:6px;padding:12px 16px;font-size:13px;line-height:1.6;margin-bottom:24px;border:1px solid}
+.banner.measured{background:var(--water-bg);color:var(--water);border-color:var(--water-pale)}
+.banner.estimated{background:var(--energy-bg);color:var(--energy);border-color:var(--energy-pale)}
+.igrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.igrp{display:flex;flex-direction:column;gap:6px}
+.igrp label{font-family:'Inter',sans-serif;font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted)}
+.igrp input{background:white;border:1px solid var(--border);border-radius:5px;padding:10px 14px;font-family:'Inter',sans-serif;font-size:16px;font-weight:400;color:var(--ink);width:100%;transition:border-color .15s;-moz-appearance:textfield}
+.igrp input::-webkit-inner-spin-button,.igrp input::-webkit-outer-spin-button{-webkit-appearance:none}
+.igrp input:focus{outline:none;border-color:var(--ink-mid)}
+.opt-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg2);border:1px dashed var(--border-mid);border-radius:5px;margin-bottom:32px}
+.opt-row label{font-family:'Inter',sans-serif;font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted);white-space:nowrap;min-width:130px}
+.opt-row input{background:transparent;border:none;border-bottom:1px solid var(--border-mid);padding:3px 0;font-family:'Inter',sans-serif;font-size:15px;color:var(--ink);width:70px;-moz-appearance:textfield}
+.opt-row input::-webkit-inner-spin-button,.opt-row input::-webkit-outer-spin-button{-webkit-appearance:none}
+.opt-row input:focus{outline:none;border-bottom-color:var(--ink)}
+.opt-row input::placeholder{color:var(--border-mid)}
+.opt-hint{font-family:'Inter',sans-serif;font-size:11px;color:var(--ink-muted)}
+.div{border:none;border-top:1px solid var(--border);margin:32px 0}
+.rsl{font-family:'Inter',sans-serif;font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.rsl::after{content:'';flex:1;height:1px;background:var(--border)}
+.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.rcard{border-radius:6px;padding:18px 20px}
+.rcard.wc{background:var(--water-bg);border:1px solid var(--water-pale)}
+.rcard.ec{background:var(--energy-bg);border:1px solid var(--energy-pale)}
+.rcard.wc2{background:white;border:1px dashed var(--water-pale)}
+.rcard.ec2{background:white;border:1px dashed var(--energy-pale)}
+.rcard .rl{font-family:'Inter',sans-serif;font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.rcard.wc .rl,.rcard.wc2 .rl{color:var(--water)}
+.rcard.ec .rl,.rcard.ec2 .rl{color:var(--energy)}
+.rcard .rv{font-family:'Inter',sans-serif;font-size:28px;font-weight:300;line-height:1.1;color:var(--ink)}
+.rcard .rv-sm{font-family:'Lato',sans-serif;font-size:20px;font-weight:300;font-style:italic;line-height:1.1;color:var(--ink-mid)}
+.rcard .ru{font-size:13px;color:var(--ink-muted);font-weight:300}
+.rcard .req{font-size:11px;color:var(--ink-muted);margin-top:6px}
+.pqs{display:none}
+.pqs.vis{display:block}
+.pqdiv{display:flex;align-items:center;gap:10px;font-family:'Inter',sans-serif;font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted);margin:16px 0 12px}
+.pqdiv::before,.pqdiv::after{content:'';flex:1;height:1px;border-top:1px dashed var(--border-mid)}
+.pcrd{background:white;border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:28px}
+.prow{display:flex;justify-content:space-between;align-items:baseline;padding:8px 16px;border-bottom:1px solid var(--border);gap:12px}
+.prow:last-child{border-bottom:none}
+.pk{font-size:12px;color:var(--ink-muted);flex-shrink:0}
+.pv{font-family:'Inter',sans-serif;font-size:12px;color:var(--ink);text-align:right}
+.pvn{font-size:11px;color:var(--ink-muted);text-align:right}
+.pill{display:inline-block;font-family:'Inter',sans-serif;font-size:9px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:3px;vertical-align:middle}
+.pill-m{background:var(--water-pale);color:var(--water)}
+.pill-e{background:var(--energy-pale);color:var(--energy)}
+.pill-f{background:var(--green-pale);color:var(--green)}
+.mblock{margin-bottom:20px}
+.mlabel{font-size:13px;color:var(--ink);margin-bottom:5px;display:flex;align-items:center;gap:8px;font-weight:400}
+.mbox{background:white;border:1px solid var(--border);border-left:2px solid var(--border-mid);border-radius:0 5px 5px 0;padding:10px 16px;font-family:'Inter',sans-serif;font-size:11.5px;color:var(--ink-mid);line-height:1.9;white-space:pre-wrap}
+.mbox .cm{color:var(--ink-muted)}
+.srcs{font-size:12px;color:var(--ink-muted);line-height:1.85}
+.srcs p{margin-bottom:10px}
+.srcs strong{color:var(--ink-mid);font-weight:400}
+.footer{margin-top:52px;padding-top:18px;border-top:1px solid var(--border);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-family:'Inter',sans-serif;font-size:10px;letter-spacing:.08em;color:var(--ink-muted)}
+.water-section{background:linear-gradient(to bottom, var(--bg) 0%, #eaf2f7 45%, #d4e8f0 100%);padding:0;position:relative;z-index:1;width:100%}
+.water-inner{max-width:680px;margin:0 auto;padding:32px 40px 60px}
+.water-section .div{border-color:rgba(58,107,138,0.2)}
+.water-section .srcs{color:#4a6878}
+.water-section .srcs strong{color:#2d4e5e}
+.water-section .footer{border-color:rgba(58,107,138,0.2);color:#5a7888;margin-top:32px}
+@media(max-width:900px){#botanical{width:200px;opacity:.7}}
+@media(max-width:600px){#botanical{display:none}.wrapper{padding:32px 20px 72px}.pgrid,.igrid,.rgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="page" id="page">
+
+<svg id="sky-svg" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f5d888" stop-opacity="0.7"/>
+      <stop offset="60%" stop-color="#f0c85a" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#f0c85a" stop-opacity="0.0"/>
+    </radialGradient>
+  </defs>
+  <!-- Sun in upper left -->
+  <g id="sun-group" opacity="0.72">
+    <!-- Outer glow -->
+    <circle cx="88" cy="88" r="52" fill="url(#sunGlow)"/>
+    <!-- Sun body -->
+    <circle cx="88" cy="88" r="26" fill="#f5d060" opacity="0.7"/>
+    <circle cx="88" cy="88" r="20" fill="#f8dc78" opacity="0.75"/>
+    <!-- Sun rays — thin lines radiating out -->
+    <g fill="none" stroke="#f0c840" stroke-linecap="round" opacity="0.5">
+      <line x1="88" y1="52" x2="88" y2="42" stroke-width="1.4"/>
+      <line x1="88" y1="124" x2="88" y2="134" stroke-width="1.4"/>
+      <line x1="52" y1="88" x2="42" y2="88" stroke-width="1.4"/>
+      <line x1="124" y1="88" x2="134" y2="88" stroke-width="1.4"/>
+      <line x1="63" y1="63" x2="56" y2="56" stroke-width="1.2"/>
+      <line x1="113" y1="63" x2="120" y2="56" stroke-width="1.2"/>
+      <line x1="63" y1="113" x2="56" y2="120" stroke-width="1.2"/>
+      <line x1="113" y1="113" x2="120" y2="120" stroke-width="1.2"/>
+      <!-- Shorter diagonal rays -->
+      <line x1="71" y1="55" x2="67" y2="48" stroke-width="1.0"/>
+      <line x1="105" y1="55" x2="109" y2="48" stroke-width="1.0"/>
+      <line x1="55" y1="71" x2="48" y2="67" stroke-width="1.0"/>
+      <line x1="55" y1="105" x2="48" y2="109" stroke-width="1.0"/>
+      <line x1="121" y1="71" x2="128" y2="67" stroke-width="1.0"/>
+      <line x1="121" y1="105" x2="128" y2="109" stroke-width="1.0"/>
+    </g>
+  </g>
+  <!-- Clouds — wispy, minimal, scattered across upper area -->
+  <!-- Cloud 1: near sun, upper-left area -->
+  <g id="cloud1" opacity="0.36">
+    <ellipse cx="195" cy="58" rx="38" ry="14" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.6"/>
+    <ellipse cx="172" cy="62" rx="22" ry="11" fill="#bcd2da" stroke="#8aaaba" stroke-width="0.5"/>
+    <ellipse cx="218" cy="64" rx="26" ry="10" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.5"/>
+    <ellipse cx="195" cy="68" rx="36" ry="9" fill="#c2d8e0" stroke="#8aaaba" stroke-width="0.4"/>
+  </g>
+  <!-- Cloud 2: upper-center -->
+  <g id="cloud2" opacity="0.28">
+    <ellipse cx="420" cy="44" rx="52" ry="15" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.6"/>
+    <ellipse cx="392" cy="50" rx="28" ry="12" fill="#bcd2da" stroke="#8aaaba" stroke-width="0.5"/>
+    <ellipse cx="448" cy="52" rx="34" ry="11" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.5"/>
+    <ellipse cx="420" cy="56" rx="48" ry="9" fill="#c2d8e0" stroke="#8aaaba" stroke-width="0.4"/>
+  </g>
+  <!-- Cloud 3: upper area, more right -->
+  <g id="cloud3" opacity="0.22">
+    <ellipse cx="680" cy="36" rx="60" ry="16" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.6"/>
+    <ellipse cx="648" cy="44" rx="32" ry="12" fill="#bcd2da" stroke="#8aaaba" stroke-width="0.5"/>
+    <ellipse cx="712" cy="46" rx="38" ry="11" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.5"/>
+    <ellipse cx="680" cy="50" rx="55" ry="9" fill="#c2d8e0" stroke="#8aaaba" stroke-width="0.4"/>
+  </g>
+  <!-- Cloud 4: far right, partial -->
+  <g id="cloud4" opacity="0.16">
+    <ellipse cx="920" cy="52" rx="44" ry="13" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.5"/>
+    <ellipse cx="896" cy="58" rx="24" ry="10" fill="#bcd2da" stroke="#8aaaba" stroke-width="0.4"/>
+    <ellipse cx="944" cy="60" rx="28" ry="9" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.4"/>
+  </g>
+  <!-- Thin wispy streaks -->
+  <g fill="none" stroke="#8aaaba" stroke-linecap="round" opacity="0.14">
+    <path stroke-width="5" d="M 300,78 C 330,74 360,76 390,72"/>
+    <path stroke-width="3.5" d="M 550,64 C 585,60 618,62 650,58"/>
+    <path stroke-width="4" d="M 160,92 C 188,88 214,90 238,86"/>
+    <path stroke-width="2.5" d="M 780,42 C 808,38 834,40 858,36"/>
+  </g>
+</svg>
+
+
+
+<div class="wrapper">
+  <header class="header">
+    <p class="eyebrow">Kaneda Consulting · AI Resource Calculator</p>
+    <h1>How <em>thirsty</em> is<br>your AI session?</h1>
+    <p class="header-sub">Enter your session token totals to estimate the water and energy your conversation consumed. Figures are drawn from the latest published research, which happens to be mostly from 2025. Google is the only major AI provider to have directly measured and published its own production data; estimates for Claude and ChatGPT are derived from independent research, not company disclosures. Since models continue to improve, actual current consumption is likely lower than these figures.</p>
+  </header>
+
+  <span class="sec">01 — Select AI assistant</span>
+  <div class="pgrid">
+    <div class="pcard active" data-p="gemini" onclick="sel('gemini')">
+      <span class="pn">Gemini</span>
+      <span class="ps">Google Infrastructure</span>
+      <span class="pd">Nearest: The Dalles, OR</span>
+    </div>
+    <div class="pcard" data-p="claude" onclick="sel('claude')">
+      <span class="pn">Claude</span>
+      <span class="ps">Anthropic / AWS</span>
+      <span class="pd">Nearest: Boardman, OR</span>
+    </div>
+    <div class="pcard" data-p="chatgpt" onclick="sel('chatgpt')">
+      <span class="pn">ChatGPT</span>
+      <span class="ps">OpenAI / Azure</span>
+      <span class="pd">Nearest: Quincy, WA</span>
+    </div>
+  </div>
+
+  <div id="banner"></div>
+
+  <span class="sec">02 — Session token totals</span>
+  <div class="igrid">
+    <div class="igrp">
+      <label for="inTok">Total input tokens</label>
+      <input type="number" id="inTok" value="5000" min="1" step="100">
+    </div>
+    <div class="igrp">
+      <label for="outTok">Total output tokens</label>
+      <input type="number" id="outTok" value="10000" min="1" step="100">
+    </div>
+  </div>
+  <div class="opt-row">
+    <label for="nQ">Queries in session</label>
+    <input type="number" id="nQ" min="1" step="1" placeholder="—">
+    <span class="opt-hint">optional — shows per-query average</span>
+  </div>
+
+  <hr class="div">
+
+  <div class="rsl">Session totals</div>
+  <div class="rgrid">
+    <div class="rcard wc">
+      <p class="rl">💧 Water consumed</p>
+      <p class="rv" id="wtD">—</p>
+      <p class="req" id="wtEq"></p>
+    </div>
+    <div class="rcard ec">
+      <p class="rl">⚡ Energy drawn</p>
+      <p class="rv" id="etD">—</p>
+      <p class="req" id="etEq"></p>
+    </div>
+  </div>
+  <div class="pqs" id="pqs">
+    <div class="pqdiv">per-query average</div>
+    <div class="rgrid">
+      <div class="rcard wc2">
+        <p class="rl">💧 Avg water / query</p>
+        <p class="rv-sm" id="wD">—</p>
+        <p class="req" id="wEq"></p>
+      </div>
+      <div class="rcard ec2">
+        <p class="rl">⚡ Avg energy / query</p>
+        <p class="rv-sm" id="eD">—</p>
+        <p class="req" id="eEq"></p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="div">
+  <span class="sec">Parameters in use</span>
+  <div class="pcrd" id="pcrd"></div>
+
+  <hr class="div">
+  <span class="sec">Methodology</span>
+  <div class="mblock">
+    <p class="mlabel">Gemini <span class="pill pill-m">directly measured</span></p>
+    <div class="mbox"><span class="cm">// Elsworth et al. (2025) — Google production instrumentation</span>
+Energy = 0.24 Wh × (output_tokens / 300)
+Water  = 0.26 mL × (output_tokens / 300)
+<span class="cm">// Scaled from fleet median (~300 output tokens). No variant breakdown published.</span></div>
+  </div>
+  <div class="mblock">
+    <p class="mlabel">Claude / ChatGPT — floor <span class="pill pill-f">Oviedo et al. 2026</span></p>
+    <div class="mbox"><span class="cm">// Production-scale H100, continuous batching. Joule peer-reviewed.</span>
+E_floor = 0.34 Wh × (output_tokens / 300)
+<span class="cm">// Corroborated by Sam Altman disclosure, June 2025</span></div>
+  </div>
+  <div class="mblock">
+    <p class="mlabel">Claude / ChatGPT — ceiling <span class="pill pill-e">Jegham et al. 2025</span></p>
+    <div class="mbox"><span class="cm">// API latency + TPS benchmarks. Flagship per provider:
+// Claude → Claude 3.7 Sonnet | ChatGPT → GPT-4o
+// Oviedo argues this overstates production energy by 4–20×
+// Current models (Claude 4.x, GPT-5) not yet in peer-reviewed literature</span>
+E_ceil = Jegham Table 4, interpolated to output_tokens</div>
+  </div>
+  <div class="mblock">
+    <p class="mlabel">Water derivation <span class="pill pill-e">Jegham et al. 2025 Eq. 4</span></p>
+    <div class="mbox">Water (mL) = [(E_kwh / PUE) × WUE_site
+             +  E_kwh × WUE_source] × 1000
+<span class="cm">// Fleet-average WUE — no facility-specific data publicly available</span></div>
+  </div>
+
+</div><!-- end wrapper -->
+
+<div class="water-section" id="water-section">
+<!-- Root divider SVG — spans full page width, roots emerge from right side where tree is -->
+<svg id="root-divider" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+  style="display:block;width:100%;height:80px;overflow:visible;position:relative;z-index:2;">
+  <g id="mound-paths"></g>
+  <g id="flower-group"></g>
+</svg>
+<div class="water-inner">
+  <span class="sec" style="color:#4a7a8a;margin-top:8px;display:block;">Sources</span>
+  <div class="srcs">
+    <p><strong>Gemini (directly measured):</strong> Elsworth et al. (2025) "Measuring the environmental impact of delivering AI at Google Scale." arXiv:2508.15734. The only directly measured, published, production-scale figure for any major AI assistant. Fleet-wide — no variant breakdown available.</p>
+    <p><strong>Claude / ChatGPT energy floor:</strong> Oviedo et al. (2026) "Energy Use of AI Inference: Efficiency Pathways and Test-Time Scaling." <em>Joule.</em> DOI: 10.1016/j.joule.2026.102430. Frontier model production median 0.34 Wh per 300 output tokens. Corroborated by Sam Altman, June 2025.</p>
+    <p><strong>Claude ceiling — Claude 3.7 Sonnet:</strong> Jegham et al. (2025) "How Hungry is AI?" arXiv:2505.09598v6 Table 4. Short: 0.950 Wh | Medium: 2.989 Wh | Long: 5.671 Wh.</p>
+    <p><strong>ChatGPT ceiling — GPT-4o:</strong> Jegham et al. (2025) Table 4. Short: 0.423 Wh | Medium: 1.215 Wh | Long: 2.875 Wh.</p>
+    <p><strong>Water formula + WUE/PUE:</strong> Jegham et al. (2025) Eq. 4 + Table 1. AWS (Claude): PUE 1.14, WUE_site 0.18, WUE_source 5.11. Azure (ChatGPT): PUE 1.12, WUE_site 0.30, WUE_source 4.35.</p>
+    <p><strong>Data gap:</strong> Published benchmarks cover models through late 2025. Current models (Claude 4.x, GPT-5, Gemini 2.x) not yet independently measured. Efficiency trends suggest actual figures are lower.</p>
+  </div>
+
+  <footer class="footer">
+    <span>Kaneda Consulting · <a href="https://www.kanedaconsulting.com" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">kanedaconsulting.com</a></span>
+    <span>Last updated June 6, 2026</span>
+  </footer>
+</div><!-- end water-inner -->
+</div><!-- end water-section -->
+
+
+
+<script>
+// Draw abstract earthy ground lines across full width
+function drawMound() {
+  const mound = document.getElementById('mound-paths');
+  if (!mound) return;
+  const W = window.innerWidth;
+  const tx = W + 10;
+  const lines = [
+    [28,  0.0, 32, 0.6,  8,  0.25, 20, 1.6, 0.42],
+    [32,  0.0, 38, 0.55, 12, 0.22, 26, 1.3, 0.35],
+    [36, -0.05,44, 0.5,  16, 0.18, 32, 1.1, 0.28],
+    [22,  0.05,28, 0.65,  6, 0.30, 16, 1.4, 0.38],
+    [18,  0.10,24, 0.68,  4, 0.35, 12, 1.2, 0.30],
+    [40,  0.0, 48, 0.5,  20, 0.20, 36, 0.9, 0.22],
+    [44, -0.05,52, 0.45, 24, 0.15, 40, 0.8, 0.18],
+    [14,  0.15,20, 0.70,  2, 0.40,  8, 1.0, 0.25],
+    [48,  0.0, 56, 0.48, 28, 0.18, 44, 0.7, 0.15],
+    [10,  0.20,16, 0.72,  0, 0.45,  6, 0.8, 0.20],
+  ];
+  let html = '';
+  lines.forEach(([sy, exf, ey, c1xf, c1y, c2xf, c2y, sw, op]) => {
+    const ex = exf * W;
+    const c1x = c1xf * W;
+    const c2x = c2xf * W;
+    html += `<path fill="none" stroke="#8a6440" stroke-width="${sw}" stroke-linecap="round"
+      opacity="${op}"
+      d="M ${tx},${sy} C ${c1x+W*0.15},${c1y} ${c2x+W*0.05},${c2y} ${ex},${ey}"/>`;
+  });
+  mound.innerHTML = html;
+}
+window.addEventListener('load', drawMound);
+window.addEventListener('resize', drawMound);
+
+// Sun pulse + cloud drift animation
+(function() {
+  let t = 0;
+  function animate() {
+    t += 0.016;
+    const sunGroup = document.getElementById('sun-group');
+    if (sunGroup) {
+      const pulse = 0.68 + Math.sin(t * 0.4) * 0.06;
+      sunGroup.setAttribute('opacity', pulse.toFixed(3));
+    }
+    ['cloud1','cloud2','cloud3','cloud4'].forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const drift = Math.sin(t * 0.12 + i * 1.4) * 8;
+      el.setAttribute('transform', `translate(${drift.toFixed(2)},0)`);
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+
+// Calculator
+const P = {
+  gemini:{name:'Gemini',infra:'Google infrastructure',measured:true,e_base:.24,w_base:.26,base_tokens:300,pue:1.12,wue_site:.30,wue_source:4.35},
+  claude:{name:'Claude',infra:'Anthropic / AWS',measured:false,oviedo:.34,pue:1.14,wue_site:.18,wue_source:5.11,flagship:'Claude 3.7 Sonnet',j_s:.950,j_m:2.989,j_l:5.671},
+  chatgpt:{name:'ChatGPT',infra:'OpenAI / Microsoft Azure',measured:false,oviedo:.34,pue:1.12,wue_site:.30,wue_source:4.35,flagship:'GPT-4o',j_s:.423,j_m:1.215,j_l:2.875}
+};
+let cur='gemini';
+function sel(p){cur=p;document.querySelectorAll('.pcard').forEach(c=>c.classList.remove('active'));document.querySelector('[data-p="'+p+'"]').classList.add('active');calc();}
+function interp(p,out){if(out<=300)return p.j_s*(out/300);if(out<=1000){const t=(out-300)/700;return p.j_s+(p.j_m-p.j_s)*t;}if(out<=1500){const t=(out-1000)/500;return p.j_m+(p.j_l-p.j_m)*t;}return p.j_l*(out/1500);}
+function wc(e,p){const k=e/1000;return((k/p.pue)*p.wue_site+k*p.wue_source)*1000;}
+function weq(ml){if(ml<1)return'≈ '+Math.round(ml*20)+' drops of water';if(ml<15)return'≈ '+ml.toFixed(1)+' mL — a small sip';if(ml<250)return'≈ '+ml.toFixed(0)+' mL — '+(ml/250*100).toFixed(0)+'% of a glass';if(ml<600)return'≈ '+(ml/1000).toFixed(2)+' L — partial water bottle';return'≈ '+(ml/1000).toFixed(2)+' L';}
+function eeq(wh){if(wh<.3)return'< one Google search (0.3 Wh)';if(wh<1)return'≈ '+(wh/.3).toFixed(1)+'× a Google search';if(wh<10)return'≈ '+(wh/10*100).toFixed(0)+'% of charging a phone';if(wh<100)return'≈ '+(wh/10).toFixed(1)+' phone charges';return'≈ '+(wh/100).toFixed(2)+' laptop charges';}
+function fmt(v,d){return parseFloat(v.toFixed(d));}
+function s(id,h){document.getElementById(id).innerHTML=h;}
+function calc(){
+  const out=parseInt(document.getElementById('outTok').value)||300;
+  const nv=document.getElementById('nQ').value;
+  const n=nv&&parseInt(nv)>0?parseInt(nv):null;
+  const p=P[cur];
+  document.getElementById('pqs').classList.toggle('vis',n!==null);
+  if(p.measured){
+    const r=out/p.base_tokens,et=p.e_base*r,wt=p.w_base*r;
+    document.getElementById('banner').innerHTML='<div class="banner measured"><strong>Directly measured by Google.</strong> Energy and water from full-stack production instrumentation of Gemini Apps (Elsworth et al., 2025 — arXiv:2508.15734). Scaled to your output token count from the fleet median (~300 tokens). No model-variant breakdown publicly available.</div>';
+    s('wtD',fmt(wt,2)+' <span class="ru">mL</span>');
+    s('etD',fmt(et,3)+' <span class="ru">Wh</span>');
+    document.getElementById('wtEq').textContent=weq(wt);
+    document.getElementById('etEq').textContent=eeq(et);
+    if(n){s('wD',fmt(wt/n,4)+' <span class="ru">mL</span>');s('eD',fmt(et/n,4)+' <span class="ru">Wh</span>');document.getElementById('wEq').textContent=weq(wt/n);document.getElementById('eEq').textContent=eeq(et/n);}
+    document.getElementById('pcrd').innerHTML='<div class="prow"><span class="pk">Provider</span><span class="pv">'+p.name+' — '+p.infra+'</span></div><div class="prow"><span class="pk">Energy baseline</span><span class="pv">0.24 Wh <span class="pill pill-m">measured</span></span></div><div class="prow"><span class="pk">Water baseline</span><span class="pv">0.26 mL <span class="pill pill-m">measured</span></span></div><div class="prow"><span class="pk">Baseline token length</span><span class="pv">~300 output tokens (fleet median)</span></div><div class="prow"><span class="pk">Scaling method</span><span class="pvn">Linear ratio on total output tokens</span></div><div class="prow"><span class="pk">Source</span><span class="pvn">Elsworth et al. (2025) — Google production data</span></div>';
+  } else {
+    const etF=p.oviedo*(out/300),etC=interp(p,out),wtF=wc(etF,p),wtC=wc(etC,p);
+    document.getElementById('banner').innerHTML='<div class="banner estimated"><strong>Estimated range — no production data published.</strong> Ceiling based on <strong>'+p.flagship+'</strong> (Jegham et al., 2025). Floor based on Oviedo et al. (2026). Current model versions have not been independently benchmarked — ceiling likely overstates current consumption.</div>';
+    s('wtD',fmt(wtF,1)+'–'+fmt(wtC,1)+' <span class="ru">mL</span>');
+    s('etD',fmt(etF,2)+'–'+fmt(etC,2)+' <span class="ru">Wh</span>');
+    document.getElementById('wtEq').textContent='floor: '+weq(wtF);
+    document.getElementById('etEq').textContent='floor: '+eeq(etF);
+    if(n){s('wD',fmt(wtF/n,3)+'–'+fmt(wtC/n,3)+' <span class="ru">mL</span>');s('eD',fmt(etF/n,4)+'–'+fmt(etC/n,4)+' <span class="ru">Wh</span>');document.getElementById('wEq').textContent='floor: '+weq(wtF/n);document.getElementById('eEq').textContent='floor: '+eeq(etF/n);}
+    document.getElementById('pcrd').innerHTML='<div class="prow"><span class="pk">Provider</span><span class="pv">'+p.name+' — '+p.infra+'</span></div><div class="prow"><span class="pk">Ceiling basis</span><span class="pvn">'+p.flagship+' <span class="pill pill-e">Jegham 2025</span></span></div><div class="prow"><span class="pk">Jegham short / med / long (Wh)</span><span class="pv">'+p.j_s+' / '+p.j_m+' / '+p.j_l+'</span></div><div class="prow"><span class="pk">Energy floor</span><span class="pv">0.34 Wh / 300 out tokens <span class="pill pill-f">Oviedo 2026</span></span></div><div class="prow"><span class="pk">PUE</span><span class="pv">'+p.pue+'</span></div><div class="prow"><span class="pk">WUE site (L/kWh)</span><span class="pv">'+p.wue_site+'</span></div><div class="prow"><span class="pk">WUE source (L/kWh)</span><span class="pv">'+p.wue_source+'</span></div><div class="prow"><span class="pk">Water formula</span><span class="pvn">Jegham et al. Eq. 4 — fleet-avg WUE</span></div>';
+  }
+}
+calc();
+document.getElementById('inTok').addEventListener('input',calc);
+document.getElementById('outTok').addEventListener('input',calc);
+document.getElementById('nQ').addEventListener('input',calc);
+</script>
+</body>
+</html>
