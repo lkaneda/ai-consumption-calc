@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>How Thirsty Is Your AI? — Session Consumption Calculator</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='wg' x1='0' y1='0' x2='0' y2='1'><stop offset='0%25' stop-color='%237ab8cc'/><stop offset='100%25' stop-color='%234a8faa'/></linearGradient></defs><!-- Cup body --><path fill='%23e8dfc8' stroke='%235a5850' stroke-width='1.2' stroke-linejoin='round' d='M7,10 L9,26 Q9,27 10,27 L22,27 Q23,27 23,26 L25,10 Z'/><path fill='%23d4cbb8' d='M7,10 L9,26 Q9,27 10,27 L11,27 Q10,27 10,26 L8,10 Z'/><!-- Water fill --><clipPath id='cup'><path d='M7,10 L9,26 Q9,27 10,27 L22,27 Q23,27 23,26 L25,10 Z'/></clipPath><rect x='6' y='17' width='20' height='11' fill='url(%23wg)' clip-path='url(%23cup)' opacity='0.85'/><!-- Rim --><rect x='6' y='9' width='20' height='2.5' rx='1' fill='%23c4b89a' stroke='%235a5850' stroke-width='0.8'/><!-- Handle --><path fill='none' stroke='%235a5850' stroke-width='1.4' stroke-linecap='round' d='M23,13 C27,13 28,16 28,18 C28,20 27,22 23,22'/><!-- Water shimmer --><path fill='none' stroke='white' stroke-width='1' stroke-linecap='round' opacity='0.5' d='M11,21 C13,19 15,21 17,19 C19,17 21,19 22,18'/></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -148,39 +149,57 @@ body{background:var(--bg);color:var(--ink);font-family:'Lato',sans-serif;font-we
     </g>
   </g>
   <!-- Clouds — wispy, minimal, scattered across upper area -->
-  <!-- Cloud 1: near sun, upper-left area -->
+  <!-- Clouds: spread generously across wide viewports, show as needed -->
+  <!-- Cloud 1: near sun -->
   <g id="cloud1" opacity="0.36">
     <ellipse cx="195" cy="58" rx="38" ry="14" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.6"/>
     <ellipse cx="172" cy="62" rx="22" ry="11" fill="#bcd2da" stroke="#8aaaba" stroke-width="0.5"/>
     <ellipse cx="218" cy="64" rx="26" ry="10" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.5"/>
     <ellipse cx="195" cy="68" rx="36" ry="9" fill="#c2d8e0" stroke="#8aaaba" stroke-width="0.4"/>
   </g>
-  <!-- Cloud 2: upper-center -->
+  <!-- Cloud 2 -->
   <g id="cloud2" opacity="0.28">
-    <ellipse cx="420" cy="44" rx="52" ry="15" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.6"/>
-    <ellipse cx="392" cy="50" rx="28" ry="12" fill="#bcd2da" stroke="#8aaaba" stroke-width="0.5"/>
-    <ellipse cx="448" cy="52" rx="34" ry="11" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.5"/>
-    <ellipse cx="420" cy="56" rx="48" ry="9" fill="#c2d8e0" stroke="#8aaaba" stroke-width="0.4"/>
+    <ellipse cx="480" cy="44" rx="52" ry="15" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.6"/>
+    <ellipse cx="452" cy="50" rx="28" ry="12" fill="#bcd2da" stroke="#8aaaba" stroke-width="0.5"/>
+    <ellipse cx="508" cy="52" rx="34" ry="11" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.5"/>
+    <ellipse cx="480" cy="56" rx="48" ry="9" fill="#c2d8e0" stroke="#8aaaba" stroke-width="0.4"/>
   </g>
-  <!-- Cloud 3: upper area, more right -->
-  <g id="cloud3" opacity="0.22">
-    <ellipse cx="680" cy="36" rx="60" ry="16" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.6"/>
-    <ellipse cx="648" cy="44" rx="32" ry="12" fill="#bcd2da" stroke="#8aaaba" stroke-width="0.5"/>
-    <ellipse cx="712" cy="46" rx="38" ry="11" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.5"/>
-    <ellipse cx="680" cy="50" rx="55" ry="9" fill="#c2d8e0" stroke="#8aaaba" stroke-width="0.4"/>
+  <!-- Cloud 3 -->
+  <g id="cloud3" opacity="0.24">
+    <ellipse cx="780" cy="38" rx="50" ry="14" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.6"/>
+    <ellipse cx="752" cy="44" rx="28" ry="11" fill="#bcd2da" stroke="#8aaaba" stroke-width="0.5"/>
+    <ellipse cx="808" cy="46" rx="32" ry="10" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.5"/>
+    <ellipse cx="780" cy="50" rx="46" ry="8" fill="#c2d8e0" stroke="#8aaaba" stroke-width="0.4"/>
   </g>
-  <!-- Cloud 4: far right, partial -->
-  <g id="cloud4" opacity="0.16">
-    <ellipse cx="920" cy="52" rx="44" ry="13" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.5"/>
-    <ellipse cx="896" cy="58" rx="24" ry="10" fill="#bcd2da" stroke="#8aaaba" stroke-width="0.4"/>
-    <ellipse cx="944" cy="60" rx="28" ry="9" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.4"/>
+  <!-- Cloud 4 -->
+  <g id="cloud4" opacity="0.20">
+    <ellipse cx="1080" cy="48" rx="46" ry="14" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.5"/>
+    <ellipse cx="1054" cy="54" rx="26" ry="11" fill="#bcd2da" stroke="#8aaaba" stroke-width="0.4"/>
+    <ellipse cx="1106" cy="56" rx="30" ry="10" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.4"/>
+    <ellipse cx="1080" cy="60" rx="42" ry="8" fill="#c2d8e0" stroke="#8aaaba" stroke-width="0.3"/>
   </g>
-  <!-- Thin wispy streaks -->
+  <!-- Cloud 5 -->
+  <g id="cloud5" opacity="0.18">
+    <ellipse cx="1380" cy="42" rx="44" ry="13" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.5"/>
+    <ellipse cx="1354" cy="48" rx="24" ry="10" fill="#bcd2da" stroke="#8aaaba" stroke-width="0.4"/>
+    <ellipse cx="1406" cy="50" rx="28" ry="9" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.4"/>
+    <ellipse cx="1380" cy="54" rx="40" ry="7" fill="#c2d8e0" stroke="#8aaaba" stroke-width="0.3"/>
+  </g>
+  <!-- Cloud 6: very far right for ultra-wide -->
+  <g id="cloud6" opacity="0.15">
+    <ellipse cx="1700" cy="52" rx="40" ry="12" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.5"/>
+    <ellipse cx="1676" cy="57" rx="22" ry="9" fill="#bcd2da" stroke="#8aaaba" stroke-width="0.4"/>
+    <ellipse cx="1722" cy="59" rx="26" ry="8" fill="#b8cfd8" stroke="#8aaaba" stroke-width="0.3"/>
+  </g>
+  <!-- Wispy streaks spread wide -->
   <g fill="none" stroke="#8aaaba" stroke-linecap="round" opacity="0.14">
-    <path stroke-width="5" d="M 300,78 C 330,74 360,76 390,72"/>
-    <path stroke-width="3.5" d="M 550,64 C 585,60 618,62 650,58"/>
-    <path stroke-width="4" d="M 160,92 C 188,88 214,90 238,86"/>
-    <path stroke-width="2.5" d="M 780,42 C 808,38 834,40 858,36"/>
+    <path stroke-width="4" d="M 160,88 C 192,84 222,86 250,82"/>
+    <path stroke-width="3.5" d="M 360,74 C 396,70 430,72 462,68"/>
+    <path stroke-width="4" d="M 620,66 C 658,62 694,64 728,60"/>
+    <path stroke-width="3" d="M 920,56 C 954,52 986,54 1016,50"/>
+    <path stroke-width="3" d="M 1200,62 C 1236,58 1268,60 1298,56"/>
+    <path stroke-width="2.5" d="M 1480,50 C 1512,46 1542,48 1570,44"/>
+    <path stroke-width="2" d="M 1740,58 C 1768,54 1796,56 1820,52"/>
   </g>
 </svg>
 
@@ -368,7 +387,7 @@ window.addEventListener('resize', drawMound);
       const pulse = 0.68 + Math.sin(t * 0.4) * 0.06;
       sunGroup.setAttribute('opacity', pulse.toFixed(3));
     }
-    ['cloud1','cloud2','cloud3','cloud4'].forEach((id, i) => {
+    ['cloud1','cloud2','cloud3','cloud4','cloud5','cloud6'].forEach((id, i) => {
       const el = document.getElementById(id);
       if (!el) return;
       const drift = Math.sin(t * 0.12 + i * 1.4) * 8;
