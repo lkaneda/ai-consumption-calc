@@ -119,7 +119,7 @@ This calculator was built entirely through a conversational session with **Claud
 | Queries in session | 72 |
 | Session focus | Research, methodology, design iteration |
 
-The session covered: sourcing and evaluating peer-reviewed research, building and iterating the calculator methodology, and designing the interface through ~30 rounds of visual feedback. The token counts above are estimates — ironic, given the subject matter.
+The session covered: sourcing and evaluating peer-reviewed research, building and iterating the calculator methodology, and designing the interface through ~30 rounds of visual feedback. The token counts above are estimates.
 
 ---
 
