@@ -128,7 +128,7 @@ The session covered: sourcing and evaluating peer-reviewed research, building an
 The biggest limitation of this calculator is that the underlying research moves slower than the models. If you have access to more recent published figures for water or energy consumption — whether from a new paper, a provider disclosure, or a life-cycle assessment — please [submit an issue](../../issues) to this repo.
 
 Useful contributions include:
-- Peer-reviewed papers published after mid-2025 with per-query energy or water figures
+- Peer-reviewed papers published with data collected after mid-2025 with per-query energy or water figures
 - Official provider disclosures with methodology (not just aggregate sustainability reports)
 - Corrections to WUE, PUE, or CIF values for any of the three providers
 - Benchmarks covering Claude 4.x, GPT-5, or Gemini 2.x or later.
