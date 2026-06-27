@@ -77,7 +77,7 @@ Applied to all three providers for a fair comparison. Elsworth et al. measured o
 ## Data sources
 
 - **Elsworth et al. (2025)** — "Measuring the environmental impact of delivering AI at Google Scale." arXiv:2508.15734. The only directly measured, published, production-scale figure for any major AI assistant. Energy baseline (0.24 Wh) and on-site water figure (0.26 mL) per 300 tokens from this source.
-- **Google 2025 Environmental Report (2024 data)** — WUE_site of 0.96 L/kWh and PUE of 1.09 back-calculated from fleet-wide totals: data center water consumption 7,787M gallons ÷ data center electricity 30,825,600 MWh. Google does not publish WUE directly.
+- **Google 2025 Environmental Report (2024 data)** — [PDF](https://www.gstatic.com/gumdrop/sustainability/google-2025-environmental-report.pdf). WUE_site of 0.96 L/kWh and PUE of 1.09 back-calculated from fleet-wide totals: data center water consumption 7,787M gallons ÷ data center electricity 30,825,600 MWh. Google does not publish WUE directly.
 - **Oviedo et al. (2026)** — "Energy Use of AI Inference: Efficiency Pathways and Test-Time Scaling." *Joule.* DOI: 10.1016/j.joule.2026.102430. Peer-reviewed production-scale H100 benchmark.
 - **Jegham et al. (2025)** — "How Hungry is AI? Benchmarking Energy, Water, and Carbon Footprint of LLM Inference." arXiv:2505.09598v6. Model-specific estimates for Claude 3.7 Sonnet and GPT-4o.
 - **AWS WUE/PUE:** PUE 1.14, WUE_source 5.11 from Jegham et al. (2025) Table 1. WUE_site updated to 0.12 L/kWh: Amazon (2025) "Amazon data center water usage." aboutamazon.com/news/sustainability/amazon-data-center-water-usage. Self-reported 2025 figure, a 52% improvement since 2021.
