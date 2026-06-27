@@ -57,9 +57,9 @@ Source: Oviedo et al. (2026) — *Joule* DOI: 10.1016/j.joule.2026.102430
 
 **Energy — Claude / ChatGPT ceiling:**
 ```
-E_ceil = Jegham et al. (2025) Table 4, interpolated to output_tokens
+E_ceil = j_s × (output_tokens / 300)
 ```
-Source: Jegham et al. (2025) — arXiv:2505.09598v6
+`j_s` is Jegham et al.'s short-query (~300 token) measured value: Claude 3.7 Sonnet 0.950 Wh, GPT-4o 0.423 Wh. Used as an energy rate for session-level scaling, consistent with how Google's measured baseline is applied. Medium and long values (j_m, j_l) are retained in the parameters display for reference. Source: Jegham et al. (2025) — arXiv:2505.09598v6
 
 **Water — Claude / ChatGPT:**
 ```

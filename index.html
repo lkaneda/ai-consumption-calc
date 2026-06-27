@@ -316,10 +316,11 @@ E_floor = 0.34 Wh × (output_tokens / 300)
     <div class="mblock">
       <p class="mlabel">Energy ceiling <span class="pill pill-e">Jegham et al. 2025</span></p>
       <div class="mbox"><span class="cm">// API latency + TPS benchmarks. Flagship per provider:
-// Claude → Claude 3.7 Sonnet | ChatGPT → GPT-4o
+// Claude → Claude 3.7 Sonnet (j_s 0.950 Wh) | ChatGPT → GPT-4o (j_s 0.423 Wh)
 // Oviedo argues this overstates production energy by 4–20×
 // Current models (Claude 4.x, GPT-5) not yet in peer-reviewed literature</span>
-E_ceil = Jegham Table 4, interpolated to output_tokens</div>
+E_ceil = j_s × (output_tokens / 300)
+<span class="cm">// j_s = short-query (~300 token) measured value, used as rate for session-level scaling</span></div>
     </div>
     <div class="mblock">
       <p class="mlabel">Water derivation <span class="pill pill-e">Jegham et al. 2025 Eq. 4</span></p>
@@ -422,7 +423,6 @@ const P = {
 };
 let cur='gemini';
 function sel(p){cur=p;document.querySelectorAll('.pcard').forEach(c=>c.classList.remove('active'));document.querySelector('[data-p="'+p+'"]').classList.add('active');calc();}
-function interp(p,out){if(out<=300)return p.j_s*(out/300);if(out<=1000){const t=(out-300)/700;return p.j_s+(p.j_m-p.j_s)*t;}if(out<=1500){const t=(out-1000)/500;return p.j_m+(p.j_l-p.j_m)*t;}return p.j_l*(out/1500);}
 function wc(e,p){const k=e/1000;return((k/p.pue)*p.wue_site+k*p.wue_source)*1000;}
 function weq(ml){if(ml<1)return'≈ '+Math.round(ml*20)+' drops of water';if(ml<15)return'≈ '+ml.toFixed(1)+' mL — a small sip';if(ml<250)return'≈ '+ml.toFixed(0)+' mL — '+(ml/250*100).toFixed(0)+'% of a glass';if(ml<600)return'≈ '+(ml/1000).toFixed(2)+' L — partial water bottle';return'≈ '+(ml/1000).toFixed(2)+' L';}
 function eeq(wh){if(wh<.3)return'< one Google search (0.3 Wh)';if(wh<1)return'≈ '+(wh/.3).toFixed(1)+'× a Google search';if(wh<10)return'≈ '+(wh/10*100).toFixed(0)+'% of charging a phone';if(wh<100)return'≈ '+(wh/10).toFixed(1)+' phone charges';return'≈ '+(wh/100).toFixed(2)+' laptop charges';}
@@ -444,7 +444,7 @@ function calc(){
     if(n){s('wD',fmt(wt/n,4)+' <span class="ru">mL</span>');s('eD',fmt(et/n,4)+' <span class="ru">Wh</span>');document.getElementById('wEq').textContent=weq(wt/n);document.getElementById('eEq').textContent=eeq(et/n);}
     document.getElementById('pcrd').innerHTML='<div class="prow"><span class="pk">Provider</span><span class="pv">'+p.name+' — '+p.infra+'</span></div><div class="prow"><span class="pk">Energy baseline</span><span class="pv">0.24 Wh <span class="pill pill-m">measured</span></span></div><div class="prow"><span class="pk">Water baseline</span><span class="pv">0.26 mL <span class="pill pill-m">measured</span></span></div><div class="prow"><span class="pk">Baseline token length</span><span class="pv">~300 output tokens (fleet median)</span></div><div class="prow"><span class="pk">Scaling method</span><span class="pvn">Linear ratio on total output tokens</span></div><div class="prow"><span class="pk">Source</span><span class="pvn">Elsworth et al. (2025) — Google production data</span></div>';
   } else {
-    const etF=p.oviedo*(out/300),etC=interp(p,out),wtF=wc(etF,p),wtC=wc(etC,p);
+    const etF=p.oviedo*(out/300),etC=p.j_s*(out/300),wtF=wc(etF,p),wtC=wc(etC,p);
     document.getElementById('banner').innerHTML='<div class="banner estimated"><strong>Estimated range — no production data published.</strong> Ceiling based on <strong>'+p.flagship+'</strong> (Jegham et al., 2025). Floor based on Oviedo et al. (2026). Current model versions have not been independently benchmarked — ceiling likely overstates current consumption.</div>';
     s('wtD',fmt(wtF,1)+'–'+fmt(wtC,1)+' <span class="ru">mL</span>');
     s('etD',fmt(etF,2)+'–'+fmt(etC,2)+' <span class="ru">Wh</span>');
