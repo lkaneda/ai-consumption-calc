@@ -104,6 +104,8 @@ body{background:var(--bg);color:var(--ink);font-family:'Lato',sans-serif;font-we
 .pill-f{background:var(--green-pale);color:var(--green)}
 .mblock{margin-bottom:20px}
 .mlabel{font-size:13px;color:var(--ink);margin-bottom:5px;display:flex;align-items:center;gap:8px;font-weight:400}
+.mgroup-label{font-size:13px;font-weight:500;color:var(--ink);margin:24px 0 10px;letter-spacing:0.01em}
+.mgroup{border-left:2px solid var(--border-mid);padding-left:14px;margin-left:2px}
 .mbox{background:white;border:1px solid var(--border);border-left:2px solid var(--border-mid);border-radius:0 5px 5px 0;padding:10px 16px;font-family:'Inter',sans-serif;font-size:11.5px;color:var(--ink-mid);line-height:1.9;white-space:pre-wrap}
 .mbox .cm{color:var(--ink-muted)}
 .srcs{font-size:12px;color:var(--ink-muted);line-height:1.85}
@@ -303,25 +305,28 @@ Energy = 0.24 Wh × (output_tokens / 300)
 Water  = 0.26 mL × (output_tokens / 300)
 <span class="cm">// Scaled from fleet median (~300 output tokens). No variant breakdown published.</span></div>
   </div>
-  <div class="mblock">
-    <p class="mlabel">Claude / ChatGPT — floor <span class="pill pill-f">Oviedo et al. 2026</span></p>
-    <div class="mbox"><span class="cm">// Production-scale H100, continuous batching. Joule peer-reviewed.</span>
+  <p class="mgroup-label">Claude / ChatGPT</p>
+  <div class="mgroup">
+    <div class="mblock">
+      <p class="mlabel">Energy floor <span class="pill pill-f">Oviedo et al. 2026</span></p>
+      <div class="mbox"><span class="cm">// Production-scale H100, continuous batching. Joule peer-reviewed.</span>
 E_floor = 0.34 Wh × (output_tokens / 300)
 <span class="cm">// Corroborated by Sam Altman disclosure, June 2025</span></div>
-  </div>
-  <div class="mblock">
-    <p class="mlabel">Claude / ChatGPT — ceiling <span class="pill pill-e">Jegham et al. 2025</span></p>
-    <div class="mbox"><span class="cm">// API latency + TPS benchmarks. Flagship per provider:
+    </div>
+    <div class="mblock">
+      <p class="mlabel">Energy ceiling <span class="pill pill-e">Jegham et al. 2025</span></p>
+      <div class="mbox"><span class="cm">// API latency + TPS benchmarks. Flagship per provider:
 // Claude → Claude 3.7 Sonnet | ChatGPT → GPT-4o
 // Oviedo argues this overstates production energy by 4–20×
 // Current models (Claude 4.x, GPT-5) not yet in peer-reviewed literature</span>
 E_ceil = Jegham Table 4, interpolated to output_tokens</div>
-  </div>
-  <div class="mblock">
-    <p class="mlabel">Water derivation <span class="pill pill-e">Jegham et al. 2025 Eq. 4</span></p>
-    <div class="mbox">Water (mL) = [(E_kwh / PUE) × WUE_site
+    </div>
+    <div class="mblock">
+      <p class="mlabel">Water derivation <span class="pill pill-e">Jegham et al. 2025 Eq. 4</span></p>
+      <div class="mbox">Water (mL) = [(E_kwh / PUE) × WUE_site
              +  E_kwh × WUE_source] × 1000
 <span class="cm">// WUE_site: AWS 0.12 L/kWh (Amazon, 2025); Azure 0.27 L/kWh (Microsoft, 2026)</span></div>
+    </div>
   </div>
 
 </div><!-- end wrapper -->
