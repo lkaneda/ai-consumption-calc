@@ -302,8 +302,8 @@ body{background:var(--bg);color:var(--ink);font-family:'Lato',sans-serif;font-we
     <p class="mlabel">Gemini <span class="pill pill-m">directly measured</span></p>
     <div class="mbox"><span class="cm">// Elsworth et al. (2025) — Google production instrumentation</span>
 Energy = 0.24 Wh × (output_tokens / 300)
-Water  = 0.26 mL × (output_tokens / 300)
-<span class="cm">// Scaled from fleet median (~300 output tokens). No variant breakdown published.</span></div>
+<span class="cm">// Scaled from fleet median (~300 output tokens). No variant breakdown published.
+// Water uses derivation formula below — Elsworth measured on-site only (0.26 mL/300 tokens)</span></div>
   </div>
   <p class="mgroup-label">Claude / ChatGPT</p>
   <div class="mgroup">
@@ -322,12 +322,14 @@ E_floor = 0.34 Wh × (output_tokens / 300)
 E_ceil = j_s × (output_tokens / 300)
 <span class="cm">// j_s = short-query (~300 token) measured value, used as rate for session-level scaling</span></div>
     </div>
-    <div class="mblock">
-      <p class="mlabel">Water derivation <span class="pill pill-e">Jegham et al. 2025 Eq. 4</span></p>
-      <div class="mbox">Water (mL) = [(E_kwh / PUE) × WUE_site
+  </div>
+  <div class="mblock">
+    <p class="mlabel">Water derivation — all providers <span class="pill pill-e">Jegham et al. 2025 Eq. 4</span></p>
+    <div class="mbox">Water (mL) = [(E_kwh / PUE) × WUE_site
              +  E_kwh × WUE_source] × 1000
-<span class="cm">// WUE_site: AWS 0.12 L/kWh (Amazon, 2025); Azure 0.27 L/kWh (Microsoft, 2026)</span></div>
-    </div>
+<span class="cm">// Gemini:  PUE 1.09 | WUE_site 0.96 (Google 2025 Env. Report, 2024 data) | WUE_source 5.11 (Oregon grid / WRI)
+// Claude:  PUE 1.14 | WUE_site 0.12 (Amazon 2025)    | WUE_source 5.11 (Oregon grid / WRI)
+// ChatGPT: PUE 1.12 | WUE_site 0.27 (Microsoft 2026) | WUE_source 4.35 (WA grid / WRI)</span></div>
   </div>
 
 </div><!-- end wrapper -->
@@ -342,11 +344,11 @@ E_ceil = j_s × (output_tokens / 300)
 <div class="water-inner">
   <span class="sec" style="color:#4a7a8a;margin-top:8px;display:block;">Sources</span>
   <div class="srcs">
-    <p><strong>Gemini (directly measured):</strong> Elsworth et al. (2025) "<a href="https://arxiv.org/abs/2508.15734" target="_blank" rel="noopener" style="color:inherit">Measuring the environmental impact of delivering AI at Google Scale.</a>" arXiv:2508.15734. The only directly measured, published, production-scale figure for any major AI assistant. Fleet-wide — no variant breakdown available.</p>
+    <p><strong>Gemini (directly measured):</strong> Elsworth et al. (2025) "<a href="https://arxiv.org/abs/2508.15734" target="_blank" rel="noopener" style="color:inherit">Measuring the environmental impact of delivering AI at Google Scale.</a>" arXiv:2508.15734. The only directly measured, published, production-scale figure for any major AI assistant. Fleet-wide — no variant breakdown available. Energy baseline (0.24 Wh / 300 tokens) and on-site water figure (0.26 mL / 300 tokens) from Elsworth et al. WUE_site of 0.96 L/kWh and PUE of 1.09 derived from Google 2025 Environmental Report (2024 data): data center water consumption 7,787M gallons ÷ data center electricity 30,825,600 MWh. Google does not publish WUE directly — this is back-calculated from fleet-wide totals.</p>
     <p><strong>Claude / ChatGPT energy floor:</strong> Oviedo et al. (2026) "<a href="https://doi.org/10.1016/j.joule.2026.102430" target="_blank" rel="noopener" style="color:inherit">Energy Use of AI Inference: Efficiency Pathways and Test-Time Scaling.</a>" <em>Joule.</em> DOI: 10.1016/j.joule.2026.102430. Frontier model production median 0.34 Wh per 300 output tokens. Corroborated by Sam Altman, June 2025.</p>
     <p><strong>Claude ceiling — Claude 3.7 Sonnet:</strong> Jegham et al. (2025) "<a href="https://arxiv.org/abs/2505.09598" target="_blank" rel="noopener" style="color:inherit">How Hungry is AI?</a>" arXiv:2505.09598v6 Table 4. Short: 0.950 Wh | Medium: 2.989 Wh | Long: 5.671 Wh.</p>
     <p><strong>ChatGPT ceiling — GPT-4o:</strong> <a href="https://arxiv.org/abs/2505.09598" target="_blank" rel="noopener" style="color:inherit">Jegham et al. (2025)</a> Table 4. Short: 0.423 Wh | Medium: 1.215 Wh | Long: 2.875 Wh.</p>
-    <p><strong>Water formula + WUE/PUE:</strong> Formula from <a href="https://arxiv.org/abs/2505.09598" target="_blank" rel="noopener" style="color:inherit">Jegham et al. (2025)</a> Eq. 4 + Table 1. PUE unchanged: AWS 1.14, Azure 1.12 (no updated disclosures). WUE_source unchanged: AWS 5.11, Azure 4.35 (Jegham et al. Table 1). WUE_site updated: AWS (Claude) 0.12 L/kWh per Amazon data center sustainability disclosure, 2025; Azure (ChatGPT) 0.27 L/kWh per Microsoft Environmental blog, June 2026.</p>
+    <p><strong>Water formula — all providers:</strong> <a href="https://arxiv.org/abs/2505.09598" target="_blank" rel="noopener" style="color:inherit">Jegham et al. (2025)</a> Eq. 4. Applied to all three providers for a fair comparison. Gemini's published figure (Elsworth et al., 0.26 mL/300 tokens) covers on-site cooling only; upstream electricity generation water is added here using the same method as Claude/ChatGPT. Gemini WUE_site 1.15 L/kWh from Elsworth et al. Gemini PUE 1.09 = Google fleet-wide average. Gemini WUE_source 5.11 L/kWh = Oregon regional grid (WRI methodology), same grid as AWS/Boardman. AWS PUE 1.14, WUE_source 5.11; Azure PUE 1.12, WUE_source 4.35 — all from Jegham et al. Table 1.</p>
     <p><strong>AWS WUE_site (Claude):</strong> Amazon (2025) "<a href="https://www.aboutamazon.com/news/sustainability/amazon-data-center-water-usage" target="_blank" rel="noopener" style="color:inherit">Amazon data center water usage.</a>" Self-reported 0.12 L/kWh in 2025, a 52% improvement since 2021.</p>
     <p><strong>Azure WUE_site (ChatGPT):</strong> Microsoft (2026) "<a href="https://blogs.microsoft.com/blog/2026/06/24/inside-microsofts-two-decade-push-to-cut-water-intensity-while-scaling-for-growth/" target="_blank" rel="noopener" style="color:inherit">Inside Microsoft's two-decade push to cut water intensity while scaling for growth.</a>" blogs.microsoft.com, June 24 2026. Self-reported 0.27 L/kWh for owned datacenter fleet in 2025.</p>
     <p><strong>Data gap:</strong> Published benchmarks cover models through late 2025. Current models (Claude 4.x, GPT-5, Gemini 2.x) not yet independently measured. Efficiency trends suggest actual figures are lower.</p>
@@ -417,7 +419,7 @@ window.addEventListener('resize', drawMound);
 
 // Calculator
 const P = {
-  gemini:{name:'Gemini',infra:'Google infrastructure',measured:true,e_base:.24,w_base:.26,base_tokens:300,pue:1.12,wue_site:.30,wue_source:4.35},
+  gemini:{name:'Gemini',infra:'Google infrastructure',measured:true,e_base:.24,w_base:.26,base_tokens:300,pue:1.09,wue_site:.96,wue_source:5.11},
   claude:{name:'Claude',infra:'Anthropic / AWS',measured:false,oviedo:.34,pue:1.14,wue_site:.12,wue_source:5.11,flagship:'Claude 3.7 Sonnet',j_s:.950,j_m:2.989,j_l:5.671},
   chatgpt:{name:'ChatGPT',infra:'OpenAI / Microsoft Azure',measured:false,oviedo:.34,pue:1.12,wue_site:.27,wue_source:4.35,flagship:'GPT-4o',j_s:.423,j_m:1.215,j_l:2.875}
 };
@@ -435,14 +437,14 @@ function calc(){
   const p=P[cur];
   document.getElementById('pqs').classList.toggle('vis',n!==null);
   if(p.measured){
-    const r=out/p.base_tokens,et=p.e_base*r,wt=p.w_base*r;
-    document.getElementById('banner').innerHTML='<div class="banner measured"><strong>Directly measured by Google.</strong> Energy and water from full-stack production instrumentation of Gemini Apps (Elsworth et al., 2025 — arXiv:2508.15734). Scaled to your output token count from the fleet median (~300 tokens). No model-variant breakdown publicly available.</div>';
+    const r=out/p.base_tokens,et=p.e_base*r,wt=wc(et,p);
+    document.getElementById('banner').innerHTML='<div class="banner measured"><strong>Energy directly measured by Google.</strong> Energy from full-stack production instrumentation of Gemini Apps (Elsworth et al., 2025 — arXiv:2508.15734). Water derived using the same formula as Claude/ChatGPT for a fair comparison — Elsworth measured on-site cooling water only (0.26 mL/300 tokens); upstream electricity generation water added here.</div>';
     s('wtD',fmt(wt,2)+' <span class="ru">mL</span>');
     s('etD',fmt(et,3)+' <span class="ru">Wh</span>');
     document.getElementById('wtEq').textContent=weq(wt);
     document.getElementById('etEq').textContent=eeq(et);
     if(n){s('wD',fmt(wt/n,4)+' <span class="ru">mL</span>');s('eD',fmt(et/n,4)+' <span class="ru">Wh</span>');document.getElementById('wEq').textContent=weq(wt/n);document.getElementById('eEq').textContent=eeq(et/n);}
-    document.getElementById('pcrd').innerHTML='<div class="prow"><span class="pk">Provider</span><span class="pv">'+p.name+' — '+p.infra+'</span></div><div class="prow"><span class="pk">Energy baseline</span><span class="pv">0.24 Wh <span class="pill pill-m">measured</span></span></div><div class="prow"><span class="pk">Water baseline</span><span class="pv">0.26 mL <span class="pill pill-m">measured</span></span></div><div class="prow"><span class="pk">Baseline token length</span><span class="pv">~300 output tokens (fleet median)</span></div><div class="prow"><span class="pk">Scaling method</span><span class="pvn">Linear ratio on total output tokens</span></div><div class="prow"><span class="pk">Source</span><span class="pvn">Elsworth et al. (2025) — Google production data</span></div>';
+    document.getElementById('pcrd').innerHTML='<div class="prow"><span class="pk">Provider</span><span class="pv">'+p.name+' — '+p.infra+'</span></div><div class="prow"><span class="pk">Energy baseline</span><span class="pv">0.24 Wh <span class="pill pill-m">measured</span></span></div><div class="prow"><span class="pk">On-site water (measured)</span><span class="pv">0.26 mL / 300 tokens <span class="pill pill-m">Elsworth 2025</span></span></div><div class="prow"><span class="pk">PUE</span><span class="pv">'+p.pue+' <span class="pill pill-m">Google fleet avg</span></span></div><div class="prow"><span class="pk">WUE site (L/kWh)</span><span class="pv">'+p.wue_site+' <span class="pill pill-m">Google Env. Report 2024</span></span></div><div class="prow"><span class="pk">WUE source (L/kWh)</span><span class="pv">'+p.wue_source+' <span class="pill pill-e">Oregon grid / WRI</span></span></div><div class="prow"><span class="pk">Baseline token length</span><span class="pv">~300 output tokens (fleet median)</span></div><div class="prow"><span class="pk">Water formula</span><span class="pvn">Jegham et al. Eq. 4 — upstream water added for fair comparison</span></div>';
   } else {
     const etF=p.oviedo*(out/300),etC=p.j_s*(out/300),wtF=wc(etF,p),wtC=wc(etC,p);
     document.getElementById('banner').innerHTML='<div class="banner estimated"><strong>Estimated range — no production data published.</strong> Ceiling based on <strong>'+p.flagship+'</strong> (Jegham et al., 2025). Floor based on Oviedo et al. (2026). Current model versions have not been independently benchmarked — ceiling likely overstates current consumption.</div>';
