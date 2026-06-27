@@ -48,18 +48,6 @@ E = 0.24 Wh × (output_tokens / 300)
 ```
 Directly measured. Source: Elsworth et al. (2025) — arXiv:2508.15734
 
-**Water — all providers:**
-```
-Water (mL) = [(E_kwh / PUE) × WUE_site + E_kwh × WUE_source] × 1000
-```
-Applied to all three providers for a fair comparison. Elsworth et al. measured on-site cooling water only (0.26 mL per 300 tokens); upstream electricity generation water is added here using the same formula as Claude/ChatGPT. Source: Jegham et al. (2025) Eq. 4.
-
-| Provider | PUE | WUE_site (L/kWh) | WUE_source (L/kWh) |
-|----------|-----|------------------|---------------------|
-| Gemini (Google) | 1.09 | 0.96 (Google 2025 Env. Report, 2024 data) | 5.11 (Oregon grid / WRI) |
-| Claude (AWS) | 1.14 | 0.12 (Amazon 2025) | 5.11 (Oregon grid / WRI) |
-| ChatGPT (Azure) | 1.12 | 0.27 (Microsoft 2026) | 4.35 (WA grid / WRI) |
-
 **Energy — Claude / ChatGPT floor:**
 ```
 E_floor = 0.34 Wh × (output_tokens / 300)
@@ -71,6 +59,18 @@ Source: Oviedo et al. (2026) — *Joule* DOI: 10.1016/j.joule.2026.102430
 E_ceil = j_s × (output_tokens / 300)
 ```
 `j_s` is Jegham et al.'s short-query (~300 token) measured value: Claude 3.7 Sonnet 0.950 Wh, GPT-4o 0.423 Wh. Used as an energy rate for session-level scaling, consistent with how Google's measured baseline is applied. Medium and long values (j_m, j_l) are retained in the parameters display for reference. Source: Jegham et al. (2025) — arXiv:2505.09598v6
+
+**Water — all providers:**
+```
+Water (mL) = [(E_kwh / PUE) × WUE_site + E_kwh × WUE_source] × 1000
+```
+Applied to all three providers for a fair comparison. Elsworth et al. measured on-site cooling water only (0.26 mL per 300 tokens); upstream electricity generation water is added here using the same formula as Claude/ChatGPT. Source: Jegham et al. (2025) Eq. 4.
+
+| Provider | PUE | WUE_site (L/kWh) | WUE_source (L/kWh) |
+|----------|-----|------------------|---------------------|
+| Gemini (Google) | 1.09 | 0.96 (Google 2025 Env. Report, 2024 data) | 5.11 (Oregon grid / WRI) |
+| Claude (AWS) | 1.14 | 0.12 (Amazon 2025) | 5.11 (Oregon grid / WRI) |
+| ChatGPT (Azure) | 1.12 | 0.27 (Microsoft 2026) | 4.35 (WA grid / WRI) |
 
 ---
 
