@@ -42,11 +42,12 @@ Gemini figures come from Google's own full-stack production instrumentation. Cla
 
 ## Methodology
 
-**Energy — Gemini:**
+**Energy + Water — Gemini:**
 ```
-E = 0.24 Wh × (output_tokens / 300)
+E     = 0.24 Wh  × (output_tokens / 300)
+Water = 0.26 mL  × (output_tokens / 300)
 ```
-Source: Elsworth et al. (2025) — arXiv:2508.15734
+Both directly measured. Source: Elsworth et al. (2025) — arXiv:2508.15734
 
 **Energy — Claude / ChatGPT floor:**
 ```
@@ -60,11 +61,11 @@ E_ceil = Jegham et al. (2025) Table 4, interpolated to output_tokens
 ```
 Source: Jegham et al. (2025) — arXiv:2505.09598v6
 
-**Water (all providers):**
+**Water — Claude / ChatGPT:**
 ```
 Water (mL) = [(E_kwh / PUE) × WUE_site + E_kwh × WUE_source] × 1000
 ```
-Source: Jegham et al. (2025) Eq. 4. Fleet-average WUE values from provider sustainability reports.
+Source: Jegham et al. (2025) Eq. 4. WUE_site values from provider disclosures (AWS: 0.12 L/kWh; Azure: 0.27 L/kWh). PUE and WUE_source from Jegham et al. Table 1.
 
 ---
 
@@ -73,8 +74,8 @@ Source: Jegham et al. (2025) Eq. 4. Fleet-average WUE values from provider susta
 - **Elsworth et al. (2025)** — "Measuring the environmental impact of delivering AI at Google Scale." arXiv:2508.15734. The only directly measured, published, production-scale figure for any major AI assistant.
 - **Oviedo et al. (2026)** — "Energy Use of AI Inference: Efficiency Pathways and Test-Time Scaling." *Joule.* DOI: 10.1016/j.joule.2026.102430. Peer-reviewed production-scale H100 benchmark.
 - **Jegham et al. (2025)** — "How Hungry is AI? Benchmarking Energy, Water, and Carbon Footprint of LLM Inference." arXiv:2505.09598v6. Model-specific estimates for Claude 3.7 Sonnet and GPT-4o.
-- **AWS WUE/PUE:** Amazon 2023 Sustainability Report. PUE 1.14, WUE_site 0.18, WUE_source 5.11.
-- **Azure WUE/PUE:** Microsoft 2024 Sustainability Report. PUE 1.12, WUE_site 0.30, WUE_source 4.35.
+- **AWS WUE/PUE:** PUE 1.14, WUE_source 5.11 from Jegham et al. (2025) Table 1. WUE_site updated to 0.12 L/kWh: Amazon (2025) "Amazon data center water usage." aboutamazon.com/news/sustainability/amazon-data-center-water-usage. Self-reported 2025 figure, a 52% improvement since 2021.
+- **Azure WUE/PUE:** PUE 1.12, WUE_source 4.35 from Jegham et al. (2025) Table 1. WUE_site updated to 0.27 L/kWh: Microsoft (2026) "Inside Microsoft's two-decade push to cut water intensity while scaling for growth." blogs.microsoft.com, June 24 2026. Self-reported 2025 figure for owned datacenter fleet.
 
 ### Data gap
 
