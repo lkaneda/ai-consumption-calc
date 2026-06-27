@@ -321,7 +321,7 @@ E_ceil = Jegham Table 4, interpolated to output_tokens</div>
     <p class="mlabel">Water derivation <span class="pill pill-e">Jegham et al. 2025 Eq. 4</span></p>
     <div class="mbox">Water (mL) = [(E_kwh / PUE) × WUE_site
              +  E_kwh × WUE_source] × 1000
-<span class="cm">// Fleet-average WUE — no facility-specific data publicly available</span></div>
+<span class="cm">// WUE_site: AWS 0.12 L/kWh (Amazon, 2025); Azure 0.27 L/kWh (Microsoft, 2026)</span></div>
   </div>
 
 </div><!-- end wrapper -->
@@ -340,7 +340,7 @@ E_ceil = Jegham Table 4, interpolated to output_tokens</div>
     <p><strong>Claude / ChatGPT energy floor:</strong> Oviedo et al. (2026) "Energy Use of AI Inference: Efficiency Pathways and Test-Time Scaling." <em>Joule.</em> DOI: 10.1016/j.joule.2026.102430. Frontier model production median 0.34 Wh per 300 output tokens. Corroborated by Sam Altman, June 2025.</p>
     <p><strong>Claude ceiling — Claude 3.7 Sonnet:</strong> Jegham et al. (2025) "How Hungry is AI?" arXiv:2505.09598v6 Table 4. Short: 0.950 Wh | Medium: 2.989 Wh | Long: 5.671 Wh.</p>
     <p><strong>ChatGPT ceiling — GPT-4o:</strong> Jegham et al. (2025) Table 4. Short: 0.423 Wh | Medium: 1.215 Wh | Long: 2.875 Wh.</p>
-    <p><strong>Water formula + WUE/PUE:</strong> Jegham et al. (2025) Eq. 4 + Table 1. AWS (Claude): PUE 1.14, WUE_site 0.18, WUE_source 5.11. Azure (ChatGPT): PUE 1.12, WUE_site 0.30, WUE_source 4.35.</p>
+    <p><strong>Water formula + WUE/PUE:</strong> Formula from Jegham et al. (2025) Eq. 4 + Table 1. PUE unchanged: AWS 1.14, Azure 1.12 (no updated disclosures). WUE_source unchanged: AWS 5.11, Azure 4.35 (Jegham et al. Table 1). WUE_site updated: AWS (Claude) 0.12 L/kWh per Amazon data center sustainability disclosure (aboutamazon.com, 2025); Azure (ChatGPT) 0.27 L/kWh per Microsoft Environmental blog (blogs.microsoft.com, June 2026).</p>
     <p><strong>Data gap:</strong> Published benchmarks cover models through late 2025. Current models (Claude 4.x, GPT-5, Gemini 2.x) not yet independently measured. Efficiency trends suggest actual figures are lower.</p>
   </div>
 
@@ -410,8 +410,8 @@ window.addEventListener('resize', drawMound);
 // Calculator
 const P = {
   gemini:{name:'Gemini',infra:'Google infrastructure',measured:true,e_base:.24,w_base:.26,base_tokens:300,pue:1.12,wue_site:.30,wue_source:4.35},
-  claude:{name:'Claude',infra:'Anthropic / AWS',measured:false,oviedo:.34,pue:1.14,wue_site:.18,wue_source:5.11,flagship:'Claude 3.7 Sonnet',j_s:.950,j_m:2.989,j_l:5.671},
-  chatgpt:{name:'ChatGPT',infra:'OpenAI / Microsoft Azure',measured:false,oviedo:.34,pue:1.12,wue_site:.30,wue_source:4.35,flagship:'GPT-4o',j_s:.423,j_m:1.215,j_l:2.875}
+  claude:{name:'Claude',infra:'Anthropic / AWS',measured:false,oviedo:.34,pue:1.14,wue_site:.12,wue_source:5.11,flagship:'Claude 3.7 Sonnet',j_s:.950,j_m:2.989,j_l:5.671},
+  chatgpt:{name:'ChatGPT',infra:'OpenAI / Microsoft Azure',measured:false,oviedo:.34,pue:1.12,wue_site:.27,wue_source:4.35,flagship:'GPT-4o',j_s:.423,j_m:1.215,j_l:2.875}
 };
 let cur='gemini';
 function sel(p){cur=p;document.querySelectorAll('.pcard').forEach(c=>c.classList.remove('active'));document.querySelector('[data-p="'+p+'"]').classList.add('active');calc();}
